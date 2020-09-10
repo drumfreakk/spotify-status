@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import tekore as tk
-import time
+from sys import argv
 
 def login():
 	user_token = tk.prompt_for_user_token(
@@ -22,19 +22,51 @@ spotify = tk.Spotify(user_token)
 
 tk.config_to_file(config_file, (None, None, None, user_token.refresh_token))
 
-track = spotify.playback_currently_playing()
-track_name = track.item.name
-track_artists = track.item.artists
-track_artist_names = track_artists[0].name
+play = ""
+pause = ""
+previous = ""
+next = ""
 
-for i in range(1, len(track_artists)):
-	track_artist_names += ", " + track_artists[i].name
+if len(argv) > 1:
+	track = spotify.playback_currently_playing()
+	if argv[1] == "track":
+		track_name = track.item.name
+		track_artists = track.item.artists
+		track_artist_names = track_artists[0].name
 
-print(track_name)
-print(track_artist_names)
+		for i in range(1, len(track_artists)):
+			track_artist_names += ", " + track_artists[i].name
 
-#spotify.playback_previous()
-#spotify.playback_next()
-#spotify.playback_pause()
-#time.sleep(1)
-#spotify.playback_resume()
+		print(track_name + " - " + track_artist_names)
+
+	elif argv[1] == "playpause_dry":
+		if track.is_playing:
+			print(pause)
+		else:
+			print(play)
+	
+	elif argv[1] == "playpause":
+		if track.is_playing:
+			spotify.playback_pause()
+			print(play)
+		else:
+			spotify.playback_resume()
+			print(pause)
+
+	elif argv[1] == "previous_dry":
+		print(previous)
+	
+	elif argv[1] == "next_dry":
+		print(next)
+
+	elif argv[1] == "previous":
+		spotify.playback_previous()
+		print(previous)
+
+	elif argv[1] == "next":
+		spotify.playback_next()
+		print(next)
+
+	else:
+		print("Unknown argument")
+
