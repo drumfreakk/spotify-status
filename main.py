@@ -13,7 +13,7 @@ def login():
 	return user_token
 
 
-config_file = "config.cfg"
+config_file = "/home/kip/.config/polybar/spotify-status/config.cfg"
 
 conf = tk.config_from_file(config_file, return_refresh=True)
 user_token = tk.refresh_user_token(*conf[:2], conf[3])
