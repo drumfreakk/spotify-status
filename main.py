@@ -2,7 +2,9 @@
 
 import tekore as tk
 from sys import argv
+from time import sleep
 import warnings
+import configparser
 
 def login():
 	user_token = tk.prompt_for_user_token(
@@ -14,8 +16,18 @@ def login():
 	return user_token
 
 
-config_file = "/home/kip/.config/polybar/spotify-status/config.cfg"
-#config_file = "/home/kip/spotify-status/config.cfg"
+#config_file = "/home/kip/.config/polybar/spotify-status/config.cfg"
+config_file = "/home/kip/spotify-status/config.cfg"
+
+config = configparser.ConfigParser()
+config.read(config_file)
+
+tail = False
+
+if "settings" in config:
+	if "tail" in config["settings"]:
+		tail = True if config["settings"]["tail"] == "True" else tail
+
 
 warnings.simplefilter('error')
 
@@ -39,30 +51,42 @@ next = ""
 if len(argv) > 1:
 	track = spotify.playback_currently_playing()
 	if argv[1] == "track":
-		
 		tk.config_to_file(config_file, (conf[0], conf[1], conf[2], user_token.refresh_token))		# Only update the creds file when showing the track to avoid duplicates or something
+		while True:		
 	
-		if isinstance(track, tk.model.CurrentlyPlaying): 
-			track_name = track.item.name
-			track_artists = track.item.artists
-			track_artist_names = track_artists[0].name
+			if isinstance(track, tk.model.CurrentlyPlaying): 
+				track_name = track.item.name
+				track_artists = track.item.artists
+				track_artist_names = track_artists[0].name
 
-			for i in range(1, len(track_artists)):
-				track_artist_names += ", " + track_artists[i].name
+				for i in range(1, len(track_artists)):
+					track_artist_names += ", " + track_artists[i].name
 
-			print(track_name + " - " + track_artist_names)
-		else:
-			print(" - ")
+				print(track_name + " - " + track_artist_names)
+			else:
+				print(" - ")
+			
+			if not tail:
+				break
+			sleep(1)
+			track = spotify.playback_currently_playing()
+
 
 	elif argv[1] == "playpause_dry":
-		if isinstance(track, tk.model.CurrentlyPlaying):
-			if track.is_playing:
-				print(pause)
+		while True:
+			if isinstance(track, tk.model.CurrentlyPlaying):
+				if track.is_playing:
+					print(pause)
+				else:
+					print(play)
 			else:
 				print(play)
-		else:
-			print(play)
-	
+			
+			if not tail:
+				break
+			sleep(1)
+			track = spotify.playback_currently_playing()
+
 	elif argv[1] == "playpause":
 		if isinstance(track, tk.model.CurrentlyPlaying):
 			if track.is_playing:
