@@ -2,6 +2,7 @@
 
 import tekore as tk
 from sys import argv
+import warnings
 
 def login():
 	user_token = tk.prompt_for_user_token(
@@ -16,7 +17,16 @@ def login():
 #config_file = "/home/kip/.config/polybar/spotify-status/config.cfg"
 config_file = "/home/kip/spotify-status/config.cfg"
 
-conf = tk.config_from_file(config_file, return_refresh=True)
+warnings.simplefilter('error')
+
+try:
+	conf = tk.config_from_file(config_file, return_refresh=True)
+except tk.MissingConfigurationWarning:
+	print("Missing config, login again manually")
+	exit()
+
+warnings.simplefilter('ignore')
+
 user_token = tk.refresh_user_token(*conf[:2], conf[3])
 
 spotify = tk.Spotify(user_token)
