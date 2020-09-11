@@ -14,8 +14,8 @@ def login():
 	return user_token
 
 
-#config_file = "/home/kip/.config/polybar/spotify-status/config.cfg"
-config_file = "/home/kip/spotify-status/config.cfg"
+config_file = "/home/kip/.config/polybar/spotify-status/config.cfg"
+#config_file = "/home/kip/spotify-status/config.cfg"
 
 warnings.simplefilter('error')
 
@@ -27,11 +27,14 @@ except tk.MissingConfigurationWarning:
 
 warnings.simplefilter('ignore')
 
+#user_token = login()
 user_token = tk.refresh_user_token(*conf[:2], conf[3])
 
 spotify = tk.Spotify(user_token)
+#print(conf)
 
-tk.config_to_file(config_file, (None, None, None, user_token.refresh_token))
+#print(user_token)
+tk.config_to_file(config_file, (conf[0], conf[1], conf[2], user_token.refresh_token))
 
 play = ""
 pause = ""
