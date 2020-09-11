@@ -27,14 +27,9 @@ except tk.MissingConfigurationWarning:
 
 warnings.simplefilter('ignore')
 
-#user_token = login()
 user_token = tk.refresh_user_token(*conf[:2], conf[3])
 
 spotify = tk.Spotify(user_token)
-#print(conf)
-
-#print(user_token)
-tk.config_to_file(config_file, (conf[0], conf[1], conf[2], user_token.refresh_token))
 
 play = ""
 pause = ""
@@ -44,6 +39,9 @@ next = ""
 if len(argv) > 1:
 	track = spotify.playback_currently_playing()
 	if argv[1] == "track":
+		
+		tk.config_to_file(config_file, (conf[0], conf[1], conf[2], user_token.refresh_token))		# Only update the creds file when showing the track to avoid duplicates or something
+	
 		if isinstance(track, tk.model.CurrentlyPlaying): 
 			track_name = track.item.name
 			track_artists = track.item.artists
