@@ -6,18 +6,8 @@ from time import sleep
 import warnings
 import configparser
 
-def login():
-	user_token = tk.prompt_for_user_token(
-		client_id,
-		client_secret,
-		redirect_uri,
-		scope=tk.scope.every
-	)
-	return user_token
-
-
-#config_file = "/home/kip/.config/polybar/spotify-status/config.cfg"
-config_file = "/home/kip/spotify-status/config.cfg"
+config_file = "/home/kip/.config/polybar/spotify-status/config.cfg"
+#config_file = "/home/kip/spotify-status/config.cfg"
 
 config = configparser.ConfigParser()
 config.read(config_file)
@@ -27,7 +17,18 @@ tail = False
 if "settings" in config:
 	if "tail" in config["settings"]:
 		tail = True if config["settings"]["tail"] == "True" else tail
+	if "active" in config["settings"]:
+		if config["settings"]["active"] == "False":
+			exit()
 
+def login():
+	user_token = tk.prompt_for_user_token(
+		client_id,
+		client_secret,
+		redirect_uri,
+		scope=tk.scope.every
+	)
+	return user_token
 
 warnings.simplefilter('error')
 
@@ -62,9 +63,9 @@ if len(argv) > 1:
 				for i in range(1, len(track_artists)):
 					track_artist_names += ", " + track_artists[i].name
 
-				print(track_name + " - " + track_artist_names)
+				print(track_name + " - " + track_artist_names, flush=True)
 			else:
-				print(" - ")
+				print(" - ", flush=True)
 			
 			if not tail:
 				break
@@ -76,11 +77,11 @@ if len(argv) > 1:
 		while True:
 			if isinstance(track, tk.model.CurrentlyPlaying):
 				if track.is_playing:
-					print(pause)
+					print(pause, flush=True)
 				else:
-					print(play)
+					print(play, flush=True)
 			else:
-				print(play)
+				print(play, flush=True)
 			
 			if not tail:
 				break

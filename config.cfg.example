@@ -1,2 +1,3 @@
 [settings]
-tail = True
+tail = False
+active = True
