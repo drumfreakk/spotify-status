@@ -13,7 +13,6 @@ config = configparser.ConfigParser()
 config.read(config_file)
 
 tail = False
-cutoff = -1
 
 if "settings" in config:
 	if "tail" in config["settings"]:
@@ -21,8 +20,6 @@ if "settings" in config:
 	if "active" in config["settings"]:
 		if config["settings"]["active"] == "False":
 			exit()
-	if "cutoff" in config["settings"]:
-		cutoff = int(config["settings"]["cutoff"])
 
 try:
 	
@@ -67,17 +64,11 @@ try:
 	
 					for i in range(1, len(track_artists)):
 						track_artist_names += ", " + track_artists[i].name
-					
-					toPrint = track_name + " - " + track_artist_names
-					
-					if cutoff > 0 and len(toPrint) > cutoff:
-						toPrint = toPrint[:cutoff - 3]
-						toPrint += "..."
-					
-					print(toPrint, flush=True)
+	
+					print(track_name + " - " + track_artist_names, flush=True)
 				else:
 					print(" - ", flush=True)
-
+				
 				if not tail:
 					break
 				sleep(1)

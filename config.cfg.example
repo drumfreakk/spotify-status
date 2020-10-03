@@ -1,3 +1,4 @@
 [settings]
 tail = False
 active = True
+cutoff = 79
