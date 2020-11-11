@@ -28,6 +28,7 @@ def run_program():
 	tail = False
 	cutoff = -1
 	vibe = True
+	config_vibe = True
 
 
 	if "settings" in config:
@@ -45,9 +46,9 @@ def run_program():
 		try:
 			conf = tk.config_from_file(config_file, return_refresh=True)
 		except tk.MissingConfigurationWarning:
-			print("Missing config, login again manually")
-			return
-	
+			config_vibe = False
+			raise Exception("")
+
 		warnings.simplefilter('ignore')
 	
 		user_token = tk.refresh_user_token(*conf[:2], conf[3])
@@ -100,7 +101,10 @@ def run_program():
 					sleep(1)
 					track = spotify.playback_currently_playing()
 			except:
-				print(" - ", flush=True)
+				if config_vibe:
+					print(" - ", flush=True)
+				else:
+					print("Missing config, login again manually")
 				return
 
 		elif argv[1] == "playpause_dry":
