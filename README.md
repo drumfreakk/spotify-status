@@ -10,7 +10,6 @@
 [module/spotify]
 type = custom/script
 exec = ~/.config/polybar/spotify-status/main.py track
-interval = 5
 
 [module/spotify-back]
 type = custom/script
@@ -21,7 +20,6 @@ click-left = ~/.config/polybar/spotify-status/main.py previous
 type = custom/script
 exec = ~/.config/polybar/spotify-status/main.py playpause_dry
 click-left = ~/.config/polybar/spotify-status/main.py playpause
-interval = 5
 
 [module/spotify-next]
 type = custom/script

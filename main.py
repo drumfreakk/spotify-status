@@ -65,54 +65,53 @@ def run_program():
 	next = ""
 	saved = ""
 	notsaved = ""
-	
-	if len(argv) > 1:
-		try:
-			track = spotify.playback_currently_playing()
-		except:
-			track = 0
-			vibe = False
 
-		if argv[1] == "track":
+	# Only update the creds file when showing the track to avoid duplicates or something
+#	if len(argv) > 1:
+#		if argv[1] == "track":
+#			tk.config_to_file(config_file, (conf[0], conf[1], conf[2], user_token.refresh_token))
+
+	while True:
+		if len(argv) > 1:
 			try:
-				if not vibe:
-					raise Exception("WE NOT GOOD FAM")
-
-				tk.config_to_file(config_file, (conf[0], conf[1], conf[2], user_token.refresh_token))		# Only update the creds file when showing the track to avoid duplicates or something
-				while True:		
-		
+				track = spotify.playback_currently_playing()
+			except:
+				track = 0
+				vibe = False
+	
+			if argv[1] == "track":
+				try:
+					if not vibe:
+						raise Exception("WE NOT GOOD FAM")
+	
+			
 					if isinstance(track, tk.model.CurrentlyPlaying): 
 						track_name = track.item.name
 						track_artists = track.item.artists
 						track_artist_names = track_artists[0].name
-	
+		
 						for i in range(1, len(track_artists)):
 							track_artist_names += ", " + track_artists[i].name
-					
+						
 						toPrint = track_name + " - " + track_artist_names
-					
+						
 						if cutoff > 0 and len(toPrint) > cutoff:
 							toPrint = toPrint[:cutoff - 3]
 							toPrint += "..."
-					
+						
 						print(toPrint, flush=True)
 					else:
 						print(" - ", flush=True)
+	
+				except:
+					if config_vibe:
+						print(" - ", flush=True)
+					else:
+						print("Missing config, login again manually")
+					return
 
-					if not tail:
-						break
-					sleep(1)
-					track = spotify.playback_currently_playing()
-			except:
-				if config_vibe:
-					print(" - ", flush=True)
-				else:
-					print("Missing config, login again manually")
-				return
-
-		elif argv[1] == "playpause_dry":
-			try:
-				while True:
+			elif argv[1] == "playpause_dry":
+				try:
 					if isinstance(track, tk.model.CurrentlyPlaying):
 						if track.is_playing:
 							print(pause, flush=True)
@@ -120,75 +119,84 @@ def run_program():
 							print(play, flush=True)
 					else:
 						print(play, flush=True)
-				
-					if not tail:
-						break
-					sleep(1)
-					track = spotify.playback_currently_playing()
-			except:
-				print(play)
-				return
-
-		elif argv[1] == "playpause":
-			try:
-				if isinstance(track, tk.model.CurrentlyPlaying):
-					if track.is_playing:
-						spotify.playback_pause()
-						print(play)
-					else:
-						spotify.playback_resume()
-						print(pause)
-				else:
+					
+				except:
 					print(play)
-			except:
-				print(play)
-				return
-
-		elif argv[1] == "saved":
-			try:
-				id = track.item.uri.split(':')[-1]
-				print(saved if spotify.saved_tracks_contains([id])[0] else notsaved)
-			except:
-				print(notsaved)
-				return
-
-		elif argv[1] == "save":
-			try:
-				id = track.item.uri.split(':')[-1]
-
-				if spotify.saved_tracks_contains([id])[0]:
-					spotify.saved_tracks_delete([id])
-					print(notsaved)
-				else:
-					spotify.saved_tracks_add([id])
-					print(saved)
-
-			except:
-				print(notsaved)
-				return
-
-		elif argv[1] == "previous_dry":
-			print(previous)
+					return
 	
-		elif argv[1] == "next_dry":
-			print(next)
+			elif argv[1] == "playpause":
+				try:
+					if isinstance(track, tk.model.CurrentlyPlaying):
+						if track.is_playing:
+							spotify.playback_pause()
+							print(play)
+						else:
+							spotify.playback_resume()
+							print(pause)
+					else:
+						print(play)
+				except:
+					print(play)
+					return
+				break
+	
+			elif argv[1] == "saved":
+				try:
+					id = track.item.uri.split(':')[-1]
+					print(saved if spotify.saved_tracks_contains([id])[0] else notsaved)
+				except:
+					print(notsaved)
+					return
+	
+			elif argv[1] == "save":
+				try:
+					id = track.item.uri.split(':')[-1]
+	
+					if spotify.saved_tracks_contains([id])[0]:
+						spotify.saved_tracks_delete([id])
+						print(notsaved)
+					else:
+						spotify.saved_tracks_add([id])
+						print(saved)
+	
+				except:
+					print(notsaved)
+					return
+				break
+	
+			elif argv[1] == "previous_dry":
+				print(previous)
+				break
+		
+			elif argv[1] == "next_dry":
+				print(next)
+				break
+	
+			elif argv[1] == "previous":
+				try:
+					spotify.playback_previous()
+				except:
+					pass
+				print(previous)
+				break
 
-		elif argv[1] == "previous":
-			try:
-				spotify.playback_previous()
-			except:
-				pass
-			print(previous)
-
-		elif argv[1] == "next":
-			try:
-				spotify.playback_next()
-			except:
-				pass
-			print(next)
+			elif argv[1] == "next":
+				try:
+					spotify.playback_next()
+				except:
+					pass
+				print(next)
+				break
+	
+			else:
+				print("Unknown argument")
+				break
 
 		else:
-			print("Unknown argument")
+			break
+
+		if not tail:
+			break
 
 
 if __name__ == "__main__":
