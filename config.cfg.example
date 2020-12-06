@@ -2,3 +2,5 @@
 tail = False
 active = True
 cutoff = 79
+tail_delay = 0.5
+

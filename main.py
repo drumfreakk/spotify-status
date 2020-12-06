@@ -25,14 +25,17 @@ def run_program():
 	config.read(config_file)
 
 	tail = False
+	tail_delay = 0
 	cutoff = -1
 	vibe = True
 	config_vibe = True
-
+	
 
 	if "settings" in config:
 		if "tail" in config["settings"]:
 			tail = True if config["settings"]["tail"] == "True" else tail
+		if "tail_delay" in config["settings"]:
+			tail_delay = float(config["settings"]["tail_delay"])
 		if "active" in config["settings"]:
 			if config["settings"]["active"] == "False":
 				return
@@ -58,13 +61,15 @@ def run_program():
 			
 	except:
 		vibe = False
+#TODO: Make this relevant again
+
 
 	play = ""
 	pause = ""
 	previous = ""
 	next = ""
-	saved = ""
-	notsaved = ""
+	saved = "saved" #""
+	notsaved = "notsaved" #""
 
 	# Only update the creds file when showing the track to avoid duplicates or something
 #	if len(argv) > 1:
@@ -108,7 +113,6 @@ def run_program():
 						print(" - ", flush=True)
 					else:
 						print("Missing config, login again manually")
-					return
 
 			elif argv[1] == "playpause_dry":
 				try:
@@ -122,7 +126,6 @@ def run_program():
 					
 				except:
 					print(play)
-					return
 	
 			elif argv[1] == "playpause":
 				try:
@@ -137,16 +140,15 @@ def run_program():
 						print(play)
 				except:
 					print(play)
-					return
 				break
-	
+
+#TODO: why doesnt this pint in polybar
 			elif argv[1] == "saved":
 				try:
 					id = track.item.uri.split(':')[-1]
 					print(saved if spotify.saved_tracks_contains([id])[0] else notsaved)
 				except:
 					print(notsaved)
-					return
 	
 			elif argv[1] == "save":
 				try:
@@ -161,7 +163,6 @@ def run_program():
 	
 				except:
 					print(notsaved)
-					return
 				break
 	
 			elif argv[1] == "previous_dry":
@@ -197,7 +198,9 @@ def run_program():
 
 		if not tail:
 			break
-
+		
+		vibe = True
+		sleep(tail_delay)
 
 if __name__ == "__main__":
 	run_program()
