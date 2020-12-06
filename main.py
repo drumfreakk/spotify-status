@@ -18,7 +18,6 @@ def login():
 
 def run_program():
 
-
 	config_file = "/home/kip/.config/polybar/spotify-status/config.cfg"
 #	config_file = "/home/kip/spotify-status/config.cfg"
 
@@ -46,6 +45,8 @@ def run_program():
 		try:
 			conf = tk.config_from_file(config_file, return_refresh=True)
 		except tk.MissingConfigurationWarning:
+			print("fuckfuck config")
+			return
 			config_vibe = False
 			raise Exception("")
 
@@ -62,6 +63,8 @@ def run_program():
 	pause = ""
 	previous = ""
 	next = ""
+	saved = ""
+	notsaved = ""
 	
 	if len(argv) > 1:
 		try:
@@ -139,6 +142,29 @@ def run_program():
 					print(play)
 			except:
 				print(play)
+				return
+
+		elif argv[1] == "saved":
+			try:
+				id = track.item.uri.split(':')[-1]
+				print(saved if spotify.saved_tracks_contains([id])[0] else notsaved)
+			except:
+				print(notsaved)
+				return
+
+		elif argv[1] == "save":
+			try:
+				id = track.item.uri.split(':')[-1]
+
+				if spotify.saved_tracks_contains([id])[0]:
+					spotify.saved_tracks_delete([id])
+					print(notsaved)
+				else:
+					spotify.saved_tracks_add([id])
+					print(saved)
+
+			except:
+				print(notsaved)
 				return
 
 		elif argv[1] == "previous_dry":
