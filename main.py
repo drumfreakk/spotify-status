@@ -5,7 +5,7 @@ from sys import argv
 from time import sleep
 import warnings
 import configparser
-
+import random
 
 def login():
 	user_token = tk.prompt_for_user_token(
@@ -165,6 +165,17 @@ def run_program():
 					print(notsaved)
 				break
 	
+			elif argv[1] == "random_queue":
+				all_uris = []
+				for i in range(0, (spotify.saved_tracks()).total, 50):
+					page = (spotify.saved_tracks(limit=50, offset=i)).items
+					for j in range(0, len(page)):
+						all_uris.append(page[j].track.uri)
+				random.shuffle(all_uris)
+				for i in range(0, len(all_uris)):
+					spotify.playback_queue_add(all_uris[i])
+				break
+
 			elif argv[1] == "previous_dry":
 				print(previous)
 				break
