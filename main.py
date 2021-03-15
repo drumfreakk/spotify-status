@@ -19,7 +19,6 @@ def login():
 def run_program():
 
 	config_file = "/home/kip/.config/polybar/spotify-status/config.cfg"
-#	config_file = "/home/kip/spotify-status/config.cfg"
 
 	config = configparser.ConfigParser()
 	config.read(config_file)
@@ -126,7 +125,14 @@ def run_program():
 					
 				except:
 					print(play)
-	
+
+			elif argv[1] == "play":
+				spotify.playback_resume()
+				break
+			elif argv[1] == "pause":
+				spotify.playback_pause()
+				break
+
 			elif argv[1] == "playpause":
 				try:
 					if isinstance(track, tk.model.CurrentlyPlaying):
