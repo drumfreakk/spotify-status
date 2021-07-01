@@ -93,7 +93,12 @@ def run_program():
 						track_name = track.item.name
 						track_artists = track.item.artists
 						track_artist_names = track_artists[0].name
-		
+
+						# Cuz non-western characters dont exactly render properly
+						if track_name == "佐賀事変" and track_artist_names == "フランシュシュ":
+							track_name = "Sagajihen"
+							track_artist_names = "Franchouchou"	
+						
 						for i in range(1, len(track_artists)):
 							track_artist_names += ", " + track_artists[i].name
 						
