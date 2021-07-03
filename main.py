@@ -67,8 +67,8 @@ def run_program():
 	pause = ""
 	previous = ""
 	next = ""
-	saved = "saved" #""
-	notsaved = "notsaved" #""
+	saved = ""
+	notsaved = ""
 
 	# Only update the creds file when showing the track to avoid duplicates or something
 #	if len(argv) > 1:
@@ -121,10 +121,7 @@ def run_program():
 			elif argv[1] == "playpause_dry":
 				try:
 					if isinstance(track, tk.model.CurrentlyPlaying):
-						if track.is_playing:
-							print(pause, flush=True)
-						else:
-							print(play, flush=True)
+						print(pause if track.is_playing else play, flush=True)
 					else:
 						print(play, flush=True)
 					
@@ -153,13 +150,15 @@ def run_program():
 					print(play)
 				break
 
-#TODO: why doesnt this pint in polybar
+#TODO: something when there isnt a track playing (might work now tho)
 			elif argv[1] == "saved":
 				try:
-					id = track.item.uri.split(':')[-1]
-					print(saved if spotify.saved_tracks_contains([id])[0] else notsaved)
+					if isinstance(track, tk.model.CurrentlyPlaying):
+						print(saved if spotify.saved_tracks_contains([track.item.uri.split(':')[-1]])[0] else notsaved, flush=True)
+					else:
+						print(notsaved, flush=True)
 				except:
-					print(notsaved)
+					print(notsaved, flush=True)
 	
 			elif argv[1] == "save":
 				try:
